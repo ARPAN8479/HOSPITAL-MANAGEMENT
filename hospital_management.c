@@ -1,0 +1,192 @@
+// C Program to implement Hospital Management System
+#include <ctype.h> // Include ctype.h for strcasecmp
+#include <stdio.h>
+#include <string.h>
+
+// Define a structure for Hospital
+struct Hospital {
+    char name[50];
+    char city[50];
+    int beds;
+    float price;
+    float rating;
+    int reviews;
+};
+
+// Define a structure for Patient
+struct Patient {
+    char name[50];
+    int age;
+};
+
+// Function to print hospital data
+void printHospital(struct Hospital hosp)
+{
+    printf("Hospital Name: %s\n", hosp.name);
+    printf("City: %s\n", hosp.city);
+    printf("Total Beds: %d\n", hosp.beds);
+    printf("Price per Bed: $%.2f\n", hosp.price);
+    printf("Rating: %.1f\n", hosp.rating);
+    printf("Reviews: %d\n", hosp.reviews);
+    printf("\n");
+}
+
+// Function to sort hospitals by beds price (ascending)
+void sortByPrice(struct Hospital hospitals[], int n)
+{
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (hospitals[j].price > hospitals[j + 1].price) {
+                struct Hospital temp = hospitals[j];
+                hospitals[j] = hospitals[j + 1];
+                hospitals[j + 1] = temp;
+            }
+        }
+    }
+}
+
+// Function to sort hospitals by name (ascending)
+void sortByName(struct Hospital hospitals[], int n)
+{
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (strcmp(hospitals[j].name, hospitals[j + 1].name) > 0) {
+                struct Hospital temp = hospitals[j];
+                hospitals[j] = hospitals[j + 1];
+                hospitals[j + 1] = temp;
+            }
+        }
+    }
+}
+
+// Function to sort hospitals by rating and reviews (descending)
+void sortByRating(struct Hospital hospitals[], int n)
+{
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (hospitals[j].rating * hospitals[j].reviews <
+                hospitals[j + 1].rating * hospitals[j + 1].reviews) {
+                struct Hospital temp = hospitals[j];
+                hospitals[j] = hospitals[j + 1];
+                hospitals[j + 1] = temp;
+            }
+        }
+    }
+}
+
+// Function to print hospitals in a specific city (case-insensitive)
+void printHospitalsInCity(struct Hospital hospitals[])
+{
+    char city[50];
+    int hospitalsFound = 0;
+
+    printf("Enter city name (X, Y or Z): ");
+    scanf("%s", city);
+
+    printf("Hospitals in %s:\n", city);
+
+    for (int i = 0; i < 5; i++) {
+        if (strcasecmp(hospitals[i].city, city) == 0) {
+            printHospital(hospitals[i]);
+            hospitalsFound++;
+        }
+    }
+
+    if (hospitalsFound == 0) {
+        printf("No hospitals found in %s\n", city);
+    }
+}
+
+// Function to sort hospitals by available beds (descending)
+void sortByBeds(struct Hospital hospitals[], int n)
+{
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (hospitals[j].beds < hospitals[j + 1].beds) {
+                struct Hospital temp = hospitals[j];
+                hospitals[j] = hospitals[j + 1];
+                hospitals[j + 1] = temp;
+            }
+        }
+    }
+}
+
+// Function to print patient data
+void printPatient(struct Patient patient)
+{
+    printf("Patient Name: %s\n", patient.name);
+    printf("Age: %d\n", patient.age);
+    printf("\n");
+}
+
+int main()
+{
+    struct Hospital hospitals[5] = {
+        {"Hospital A", "X", 100, 250.0, 4.5, 100},
+        {"Hospital B", "Y", 150, 200.0, 4.2, 80},
+        {"Hospital C", "X", 200, 180.0, 4.0, 120},
+        {"Hospital D", "Z", 80, 300.0, 4.8, 90},
+        {"Hospital E", "Y", 120, 220.0, 4.6, 110}
+    };
+
+    struct Patient patients[5][3] = {
+        {{"Amar", 35}, {"Manish", 45}, {"Atul", 28}},
+        {{"Elvish", 62}, {"Debolina", 18}, {"Shruti", 55}},
+        {{"Zafar", 50}, {"Rahul", 30}, {"Priya", 40}},
+        {{"Amir", 22}, {"Asif", 38}, {"Prince", 60}},
+        {{"Aditya", 28}, {"Aman", 48}, {"Sahil", 33}}
+    };
+
+    int n = 5;
+    int choice;
+
+    do {
+        printf("\n*********** Hospital Management System Menu ***********\n");
+        printf("1. Printing Hospital Data\n");
+        printf("2. Printing Patients Data\n");
+        printf("3. Sorting Hospitals by Beds Price\n");
+        printf("4. Sorting Hospitals by Available Beds\n");
+        printf("5. Sorting Hospitals by Name\n");
+        printf("6. Sorting Hospitals by Rating and Reviews\n");
+        printf("7. Print Hospitals in a Specific City\n");
+        printf("8. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+        case 1:
+            for (int i = 0; i < n; i++)
+                printHospital(hospitals[i]);
+            break;
+        case 2:
+            for (int i = 0; i < n; i++) {
+                printf("Hospital: %s\n", hospitals[i].name);
+                for (int j = 0; j < 3; j++)
+                    printPatient(patients[i][j]);
+            }
+            break;
+        case 3:
+            sortByPrice(hospitals, n);
+            break;
+        case 4:
+            sortByBeds(hospitals, n);
+            break;
+        case 5:
+            sortByName(hospitals, n);
+            break;
+        case 6:
+            sortByRating(hospitals, n);
+            break;
+        case 7:
+            printHospitalsInCity(hospitals);
+            break;
+        case 8:
+            printf("Exiting...\n");
+            break;
+        default:
+            printf("Invalid choice\n");
+        }
+    } while (choice != 8);
+
+    return 0;
+}
